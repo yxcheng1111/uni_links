@@ -13,14 +13,14 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.PluginRegistry;
+import io.flutter.plugin.common.PluginRegistry.NewIntentListener;
 
 public class UniLinksPlugin
         implements FlutterPlugin,
                 MethodChannel.MethodCallHandler,
                 EventChannel.StreamHandler,
                 ActivityAware,
-                PluginRegistry.NewIntentListener {
+                NewIntentListener  {
 
     private static final String MESSAGES_CHANNEL = "uni_links/messages";
     private static final String EVENTS_CHANNEL = "uni_links/events";
@@ -78,21 +78,6 @@ public class UniLinksPlugin
 
         final EventChannel eventChannel = new EventChannel(messenger, EVENTS_CHANNEL);
         eventChannel.setStreamHandler(plugin);
-    }
-
-    /** Plugin registration. */
-    public static void registerWith(@NonNull PluginRegistry.Registrar registrar) {
-        // Detect if we've been launched in background
-        if (registrar.activity() == null) {
-            return;
-        }
-
-        final UniLinksPlugin instance = new UniLinksPlugin();
-        instance.context = registrar.context();
-        register(registrar.messenger(), instance);
-
-        instance.handleIntent(registrar.context(), registrar.activity().getIntent());
-        registrar.addNewIntentListener(instance);
     }
 
     @Override
